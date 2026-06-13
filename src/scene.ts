@@ -29,6 +29,16 @@ import { resizeRendererToDisplaySize } from "./helpers/responsiveness.js";
 import AnimatedSprite from "./helpers/animatedsprite.js";
 
 const CANVAS_ID = "scene";
+const POKEMON_ID_MIN = 1;
+const POKEMON_ID_MAX = 351;
+
+
+function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+}
+
 
 class PokemonScene {
   canvas: HTMLElement;
@@ -58,6 +68,10 @@ class PokemonScene {
     this.renderer.shadowMap.type = PCFSoftShadowMap;
     this.renderer.toneMapping = ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.0;
+
+    this.querystring = new URLSearchParams(document.location.search);
+    this.pokemonId = parseInt(this.querystring.get('pokemonid')) || this.getRandomPokemonId();
+
 
     this.scene = new Scene();
     this.scene.background = new Color(0xeeeeee);
@@ -151,8 +165,7 @@ class PokemonScene {
     if (this.shadow) this.scene.remove(this.shadow);
     if (this.sprite) this.scene.remove(this.sprite);
 
-    const pid = this.getRandomInt(1, 351);
-    // const pid = 100;
+    const pid = this.pokemonId;
     const baseUrl =
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/";
     this.shadow = new AnimatedSprite(true);
@@ -173,6 +186,7 @@ class PokemonScene {
         position: "top",
         backdrop: false,
         preConfirm: async () => {
+          this.pokemonId = this.getRandomPokemonId();
           return await this.getPokemon();
         },
       });
@@ -216,10 +230,8 @@ class PokemonScene {
     this.renderer.render(this.scene, this.camera);
   }
 
-  getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+  getRandomPokemonId() {
+    return getRandomInt(POKEMON_ID_MIN, POKEMON_ID_MAX);
   }
 }
 
