@@ -21,6 +21,6 @@
     "@chronosai/three-infinite-grid": "^0.1.0",
     "gifuct-js": "^2.1.2",
     "sweetalert2": "^11.11.0",
-    "three": "^0.164.1"
+    "three": "^0.184.0"
   }
 }
